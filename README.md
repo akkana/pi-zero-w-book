@@ -1,2 +1,7 @@
-# pi-zero-w-book
-Code used in "Jumpstarting the Raspberry Pi Zero W", from Make: Books; plus some extra programs just for fun.
+# Jumpstarting the Raspberry Pi Zero W
+
+This repository contains all the code used in the upcoming book
+*Jumpstarting the Raspberry Pi Zero W*, by Akkana Peck, from Make: Books.
+
+Plus some extra Raspberry Pi programs just for fun.
+
