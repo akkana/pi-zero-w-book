@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import twit
+# Scrape a web page and display it on a light string.
+
+import scrape
 import time
 
 # Define this to NeoPixel or DotStar
@@ -37,24 +39,23 @@ strip.begin()
 # Following topics:
 topicwords = {
     'tech':   [ 'raspberry pi', 'linux', 'maker', 'arduino', 'open source', 'earthquake', 'eclipse', 'pyroclastic' ],
-    'nature': [ 'bike', 'hike', 'bird', 'bear', 'trail', 'island', 'nature' ]
+    'science': [ 'microbe', 'eclipse' ]
     }
 
 topiccolors = {
-    'nature': Color(  0, 255,   0),
+    'science': Color(  0, 255,   0),
     'tech':   Color(255,   0, 255),
     }
 
-TWITTER_CHECK_TIME = 120       # How often to check Twitter
+CHECK_TIME = 120               # How often to check the website
 TIME_BETWEEN_PIXELS = .02      # Seconds from one pixel to the next
 led_number = 0                 # Which LED are we setting right now?
-tot_time = TWITTER_CHECK_TIME  # So we'll check immediately
-
-twitapi = twit.init_twitter()
+tot_time = CHECK_TIME          # So we'll check immediately
 
 while True:
-    if tot_time >= TWITTER_CHECK_TIME:
-        keywords_found = twit.match_keywords(twitapi, topicwords)
+    if tot_time >= CHECK_TIME:
+        keywords_found = scrape.match_keywords('http://slashdot.org',
+                                               topicwords)
         tot_time = 0
         print(keywords_found)
 

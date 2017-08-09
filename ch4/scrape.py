@@ -11,7 +11,7 @@ def match_keywords(url, topicwords):
     for script in soup(["script"]):
         script.extract()      # Remove all <script> tags
 
-    matches = {}
+    matches = {}    # Build up a new dictionary of matches to return
 
     for line in soup.text.lower().splitlines():
         for topic in topicwords:
