@@ -1,22 +1,18 @@
 #!/usr/bin/env python
 
 import requests
-from bs4 import BeautifulSoup
 
 def match_keywords(url, topicwords):
     r = requests.get(url)
-    soup = BeautifulSoup(r.text, "lxml")
-
-    # Remove javascript:
-    for script in soup(["script"]):
-        script.extract()      # Remove all <script> tags
 
     matches = {}
 
-    for line in soup.text.lower().splitlines():
+    for line in r.text.splitlines():
+        line = line.lower()    # convert it to lowercase
         for topic in topicwords:
             for word in topicwords[topic]:
                 if word in line:
+                    # Add it to matches
                     if topic in matches:
                         matches[topic] += 1
                     else:
