@@ -23,11 +23,13 @@ twitapi = init_twitter()
 messages_seen = set()
 
 def check_for_command(twitapi, code, recentminutes):
-    '''Check for the most recent direct message that starts with code
-       and was sent in the specified number of minutes.
-       Look for the command after the code, so for example, FAN ON.
+    '''Check for the most recent direct message that
+       starts with code and was sent in the specified
+       number of minutes.
+       Look for the command after the code, e.g. FAN ON.
        Returns (cmd, user) if there was a command,
-       where command is a string like "ON" and user is a screen name.
+       where command is a string like "ON"
+       and user is a screen name.
        Returns (None, None) if there was no command.
     '''
     DMs = twitapi.GetDirectMessages(count=5, skip_status=True)
@@ -39,7 +41,7 @@ def check_for_command(twitapi, code, recentminutes):
         messages_seen.add(msg.id)
 
         if msg.text.startswith(code):
-            # strip off the code part to get the ON or OFF command:
+            # strip off the code part to get the ON/OFF command:
             cmd = msg.text[len(code):].strip()
 
             # Parse the creation time for the message,
@@ -70,13 +72,16 @@ if __name__ == '__main__':
             if cmd == "ON":
                 print("Turning fan on")
                 GPIO.output(powerswitch, GPIO.HIGH)
-                twitapi.PostDirectMessage("Turned fan ON", screen_name=user)
+                twitapi.PostDirectMessage("Turned fan ON",
+                                          screen_name=user)
             elif cmd == "OFF":
                 print("Turning fan off")
                 GPIO.output(powerswitch, GPIO.LOW)
-                twitapi.PostDirectMessage("Turned fan OFF", screen_name=user)
+                twitapi.PostDirectMessage("Turned fan OFF",
+                                          screen_name=user)
             elif cmd:
-                twitapi.PostDirectMessage("I don't understand command %s" % cmd,
+                twitapi.PostDirectMessage("Unknown cmd %s"
+                                          % cmd,
                                           screen_name=user)
             else:
                 print("Didn't see a command")
