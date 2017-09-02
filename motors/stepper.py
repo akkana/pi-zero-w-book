@@ -36,13 +36,13 @@ class Stepper_28BYJ:
     def forward(self, delay, steps):
         for i in range(steps):
             for step in self.halfstep:
-                self.set_step(step[0], step[1], step[2], step[3])
+                self.set_step(*step)
                 time.sleep(delay)
 
     def backward(self, delay, steps):
         for i in range(steps):
             for step in reversed(self.halfstep):
-                self.set_step(step[0], step[1], step[2], step[3])
+                self.set_step(*step)
                 time.sleep(delay)
 
     def cleanup(self):
