@@ -56,7 +56,7 @@ def match_keywords(twitapi, topicwords):
 if __name__ == '__main__':
     import time
 
-    twit = init_twitter()
+    twitapi = init_twitter()
 
     # For each mood, list some keywords that fit that mood.
     # Keywords should be all lower case.
@@ -69,8 +69,8 @@ if __name__ == '__main__':
         }
 
     while True:
-        print_timeline(twit)
+        print_timeline(twitapi)
         print()
-        print(match_keywords(twit, topicwords))
+        print(match_keywords(twitapi, topicwords))
         time.sleep(30)
 
