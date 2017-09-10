@@ -3,6 +3,9 @@
 # Control a 4 x 7-segment I2C display, for instance,
 # one of the undocumented ebay cheapies with labels like
 # Kozig or "Thinking & Creative" or ZT SEG8B4A036A.
+#
+# Thanks to https://github.com/garlick/pi-ted-envoy,
+# where led.c and ztled.c showed how to talk to the LED.
 
 import io, fcntl
 import time
