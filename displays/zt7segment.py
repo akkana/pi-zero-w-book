@@ -11,22 +11,38 @@ import io, fcntl
 import time
 
 class LEDI2C:
-    ADDRESS = 0x51      # The default address, which apparently can be changed
     I2C_SLAVE = 0x0703
 
-    def __init__(self, bus):
+    def __init__(self, bus, address=0x51):
+        self.address = address
         # Open the I2C bus:
-        self.fread  = io.open("/dev/i2c-%d" % bus, "rb",
-                              buffering=0)
+        # self.fread  = io.open("/dev/i2c-%d" % bus, "rb",
+        #                       buffering=0)
         self.fwrite = io.open("/dev/i2c-%d" % bus, "wb",
                               buffering=0)
 
         # initialize the device as a slave:
-        fcntl.ioctl(self.fread, self.I2C_SLAVE, self.ADDRESS)
-        fcntl.ioctl(self.fwrite, self.I2C_SLAVE, self.ADDRESS)
+        # fcntl.ioctl(self.fread, self.I2C_SLAVE, self.address)
+        fcntl.ioctl(self.fwrite, self.I2C_SLAVE, self.address)
+
+        # Set the address to what it already is:
+        # self.fwrite.write(b'\x08\x51\x00\x00')
+        # print("Set the address")
+
+        # Tell it not to go to sleep. SLEEP_ON is 0xa5, SLEEP_OFF is 0xa1
+        self.fwrite.write(b'\x04\xa1\x00\x00\x00')
+        print("Told the LED not to sleep")
+
+    def test(self):
+        self.fwrite.write(b'\x0a\xff\xff\x00\x00')
+        # self.set_brightness(0xff)
+        # self.write_codes(b'\xff\xff\xff\xff')
+
+        # write bEEF:
+        self.fwrite.write(b'\x02\x71\x79\x79\x7c')
 
     def close(self):
-        self.fread.close()
+        # self.fread.close()
         self.fwrite.close()
 
     def set_brightness(self, b):
@@ -34,6 +50,7 @@ class LEDI2C:
         '''
         # Also consider using Python's struct for packed binary data.
         cmd = bytearray(b'\x0a\xff\x00\x00')
+        # cmd = bytearray(b'\x51\x0a\xff\x00\x00')
         cmd.insert(1, b)
         self.fwrite.write(cmd)
 
@@ -51,6 +68,7 @@ class LEDI2C:
                     -08-   80
         '''
         buf = bytearray(b'\x51\x02\x00\x00\x00')
+        # buf = bytearray(b'\x02\x00\x00\x00')
         for d in reversed(codes):
             buf.append(d)
         self.fwrite.write(buf)
@@ -82,15 +100,18 @@ class LEDI2C:
 if __name__ == '__main__':
     led = LEDI2C(1)
 
-    led.set_brightness(0x60)
+    led.test()
 
-    while True:
-        led.write_string('12.e.f')
-        time.sleep(2)
-        led.write_codes(b'\x01\x02\x04\x08')
-        time.sleep(2)
-        led.write_codes(b'\x10\x20\x40\x80')
-        time.sleep(2)
+    # led.set_brightness(0xff)
+    # print("Set brightness")
+
+    # while True:
+    #     led.write_string('12.e.f')
+    #     time.sleep(2)
+    #     led.write_codes(b'\x01\x02\x04\x08')
+    #     time.sleep(2)
+    #     led.write_codes(b'\x10\x20\x40\x80')
+    #     time.sleep(2)
 
     led.close()
 
