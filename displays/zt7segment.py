@@ -29,17 +29,30 @@ class LEDI2C:
         # self.fwrite.write(b'\x08\x51\x00\x00')
         # print("Set the address")
 
-        # Tell it not to go to sleep. SLEEP_ON is 0xa5, SLEEP_OFF is 0xa1
-        self.fwrite.write(b'\x04\xa1\x00\x00\x00')
-        print("Told the LED not to sleep")
+        self.sleep_set(False)
+
+    def sleep_set(self, sleep):
+        '''Put the display to sleep (if sleep=True) or wake it up (False).
+           Sleep is 0xa5, wakeup is 0xa1.
+        '''
+        cmd = bytearray(b'\x04\xa1\x00\x00\x00')
+        if sleep:
+            cmd[1] = 0xa5
+        self.fwrite.write(cmd)
 
     def test(self):
-        self.fwrite.write(b'\x0a\xff\xff\x00\x00')
-        # self.set_brightness(0xff)
-        # self.write_codes(b'\xff\xff\xff\xff')
-
-        # write bEEF:
-        self.fwrite.write(b'\x02\x71\x79\x79\x7c')
+        '''Light all the segments in a pattern.
+        '''
+        for i in range(20):
+            for i in range(8):
+                val = 1<<i;
+                self.write_codes(bytearray([val] * 4))
+                time.sleep(.2)
+            for j in range(2):
+                self.write_codes(b'\xff\xff\xff\xff')
+                time.sleep(.5)
+                self.write_codes(b'\x80\x80\x80\x80')
+                time.sleep(.5)
 
     def close(self):
         # self.fread.close()
@@ -67,10 +80,22 @@ class LEDI2C:
                    |    |
                     -08-   80
         '''
-        buf = bytearray(b'\x51\x02\x00\x00\x00')
-        # buf = bytearray(b'\x02\x00\x00\x00')
+        # self.fwrite.write(b'\x02\xff\xff\xff\x80')
+        for d in codes:
+            # print "%02x" % ord(d),
+            pass
+        print
+
+        buf = bytearray(b'\x02')
+        # Append the reversed byte string:
         for d in reversed(codes):
             buf.append(d)
+
+        for d in buf:
+            # print "%02x" % ord(d),
+            pass
+        print
+
         self.fwrite.write(buf)
 
     # Hex digits. But you can also send other codes to light other
@@ -100,18 +125,10 @@ class LEDI2C:
 if __name__ == '__main__':
     led = LEDI2C(1)
 
+    led.set_brightness(0x60)
+
+    # led_write_string('12.e.f')
     led.test()
-
-    # led.set_brightness(0xff)
-    # print("Set brightness")
-
-    # while True:
-    #     led.write_string('12.e.f')
-    #     time.sleep(2)
-    #     led.write_codes(b'\x01\x02\x04\x08')
-    #     time.sleep(2)
-    #     led.write_codes(b'\x10\x20\x40\x80')
-    #     time.sleep(2)
 
     led.close()
 
