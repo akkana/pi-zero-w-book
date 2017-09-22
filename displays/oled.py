@@ -69,12 +69,14 @@ def draw_calendar(disp, year, month):
         x = padding
         for day in row:
             daystr = "%2d" % day if day else "  "
-            draw.text((x, y), daystr, font=font, fill=255)
 
             if highlight_cur and day == now.day:
                 draw.rectangle((x-padding*2, y-padding,
-                                x+colwidth-padding*4, y+lineheight+padding),
-                               outline=255, fill=None)
+                                x+colwidth-padding*5, y+lineheight+padding),
+                               outline=255, fill=255)
+                draw.text((x, y), daystr, font=font, fill=0)
+            else:
+                draw.text((x, y), daystr, font=font, fill=255)
 
             x += colwidth
 
