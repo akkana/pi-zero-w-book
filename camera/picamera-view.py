@@ -8,11 +8,18 @@
 
 import io
 import time
+import sys
 import picamera
 import Tkinter
 from PIL import Image, ImageTk
 
 root = Tkinter.Tk()
+
+def quit(event):
+    sys.exit(0)
+
+root.bind("q", quit)
+root.bind("ctrl+q", quit)
 
 # Create the in-memory stream to capture the image:
 stream = io.BytesIO()
@@ -32,4 +39,3 @@ label.pack()
 
 root.mainloop()
 
-camera.stop_preview()
