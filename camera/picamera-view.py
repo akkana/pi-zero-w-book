@@ -13,6 +13,9 @@ import picamera
 import Tkinter
 from PIL import Image, ImageTk
 
+width = 800
+height = 600
+
 root = Tkinter.Tk()
 
 def quit(event):
@@ -24,7 +27,9 @@ root.bind("ctrl+q", quit)
 # Create the in-memory stream to capture the image:
 stream = io.BytesIO()
 with picamera.PiCamera() as camera:
-    camera.start_preview()
+    # camera.resolution = (1024, 768)
+    camera.resolution = (width, height)
+    # camera.start_preview()
     time.sleep(.5)
     camera.capture(stream, format='jpeg')
 
@@ -34,7 +39,8 @@ image = Image.open(stream)
 
 # Now show it in the Tk window.
 photoimage = ImageTk.PhotoImage(image)
-label = Tkinter.Label(root, image=photoimage)
+label = Tkinter.Label(root, image=photoimage, width=width, height=height)
+# label = Tkinter.Label(root, image=photoimage)
 label.pack()
 
 root.mainloop()
