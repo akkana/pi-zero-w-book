@@ -12,8 +12,10 @@
 import time
 
 # DotStar or NeoPixel?
-ledtype = "DOTSTAR"
-LED_COUNT = 30
+ledtype = "NEOPIXEL"
+LED_COUNT = 7
+# ledtype = "DOTSTAR"
+# LED_COUNT = 30
 
 if ledtype == "NEOPIXEL":
     from neopixel import Adafruit_NeoPixel, Color, ws
