@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-# Raspberry Pi driver for the HC-SR04 ultrasonic rangefinder
+# Raspberry Pi driver for the ME007 ultrasonic rangefinder
 # and similar devices.
-# Copyright (C) 2014 Akkana Peck <akkana@shallowsky.com>>
+
+# Copyright (C) 2018 Akkana Peck <akkana@shallowsky.com>>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,20 +18,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
 
-# Adapted from code by Matt Hawkins of RaspberryPi-Spy.co.uk
-# Wire the circuit as shown in
-# http://www.raspberrypi-spy.co.uk/2013/01/ultrasonic-distance-measurement-using-python-part-2/
-
-# This circuit also works with an ME007Y (the one with the long cable)
-# but not with an ME007-ULS (the one in the big plastic housing with
-# a button to switch modes).
+# There are lots of different versions of ME007.
+# This circuit also works with ME007Y (the one with the long cable)
+# and ME007-ULS (the one in the big plastic housing with a button to
+# switch modes: put it in PWM mode, single blinks).
+# It DOES NOT work with serial versions of the ME007.
 
 import RPi.GPIO as GPIO
 import time
 
-class HC_SR04:
+class ME007:
     def __init__(self, trigger=23, echo=24):
         self.GPIO_TRIGGER = trigger
         self.GPIO_ECHO    = echo
@@ -81,7 +79,7 @@ class HC_SR04:
 
 if __name__ == '__main__':
     try:
-        rf = HC_SR04()
+        rf = ME007()
         while True:
             print "Distance: %.1f inches" % rf.average_distance_in(verbose=True)
             time.sleep(1)
