@@ -4,9 +4,10 @@ import RPi.GPIO as GPIO
 import time
 
 def button_handler(pin):
-    # There seems to be a delay between the time a FALLING event is called
-    # and when GPIO.input can actually read the button as low.
-    # Empirically, .001 isn't enough to read it reliably, but .01 seems to be.
+    # Since we specified bouncetime, we have to wait a little
+    # before checking the pin's value.
+    # But the amount we need to wait isn't the same as the bounce time.
+    # If we wait the full bouncetime, we'll get multiple events.
     time.sleep(.01)
     if GPIO.input(pin):
         print("ON")
@@ -24,7 +25,10 @@ if __name__ == '__main__':
     # events can be GPIO.RISING, GPIO.FALLING, or GPIO.BOTH
     GPIO.add_event_detect(button_pin, GPIO.BOTH,
                           callback=button_handler,
-                          bouncetime=300)
+                           bouncetime=300)
 
-    time.sleep(1000)
+    try:
+        time.sleep(1000)
+    except KeyboardInterrupt:
+        GPIO.cleanup()
 
