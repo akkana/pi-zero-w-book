@@ -10,7 +10,6 @@ from __future__ import print_function
 
 import RPi.GPIO as GPIO
 import sys, os
-import time
 
 from CD4021 import CD4021
 
@@ -99,14 +98,7 @@ if __name__ == '__main__':
 
     try:
         while True:
-            # b1 = shiftr.read_one_byte()
-            # print(format(b1, '#010b'))
-            t1 = time.time()
             threebytes = shiftr.read_n_bytes(3)
-            t2 = time.time()
-            # print("Reading three bytes took %f secs" % (t2 - t1))
-            # Reading the bytes typically takes about 0.005 secs.
-
             play_notes(threebytes)
 
     except KeyboardInterrupt:
