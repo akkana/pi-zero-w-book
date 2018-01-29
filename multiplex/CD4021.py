@@ -11,7 +11,7 @@ import RPi.GPIO as GPIO
 import time
 
 class CD4021:
-    pulseTime = .000025     # gordonDrogon says 25 microseconds, .000025
+    pulse_time = .000025     # gordonDrogon says 25 microseconds, .000025
 
     def __init__(self, clock, latch, data):
         self.latch = latch
@@ -28,9 +28,9 @@ class CD4021:
     def pulse_pin(self, pin):
         '''Pulse a pin high, then low'''
         GPIO.output(pin, GPIO.HIGH)
-        time.sleep(CD4021.pulseTime)
+        time.sleep(CD4021.pulse_time)
         GPIO.output(pin, GPIO.LOW)
-        time.sleep(CD4021.pulseTime)
+        time.sleep(CD4021.pulse_time)
 
     def read_byte(self):
         # Read first bit
@@ -53,7 +53,7 @@ class CD4021:
         bytesread = [ self.read_one_byte() ]
 
         for i in range(1, numbytes):
-            # For subsequent threebytes, we don't want another latch but
+            # For subsequent bytes, we don't want another latch but
             # read_byte doesn't start with a clock pulse, so do it here.
             self.pulse_pin(self.clock)
             bytesread.append(self.read_byte())
