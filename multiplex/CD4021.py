@@ -11,7 +11,7 @@ import RPi.GPIO as GPIO
 import time
 
 class CD4021:
-    pulseTime = .0025     # gordonDrogon says 25 microseconds, .000025
+    pulseTime = .000025     # gordonDrogon says 25 microseconds, .000025
 
     def __init__(self, clock, latch, data):
         self.latch = latch
@@ -49,26 +49,31 @@ class CD4021:
 
         return self.read_byte()
 
-    def read_n_bytes(self, nbytes):
-        bytes = [ self.read_one_byte() ]
+    def read_n_bytes(self, numbytes):
+        bytesread = [ self.read_one_byte() ]
 
-        for i in range(1, nbytes):
-            # For subsequent bytes, we don't want another latch but
+        for i in range(1, numbytes):
+            # For subsequent threebytes, we don't want another latch but
             # read_byte doesn't start with a clock pulse, so do it here.
             self.pulse_pin(self.clock)
-            bytes.append(self.read_byte())
+            bytesread.append(self.read_byte())
 
-        return bytes
+        return bytesread
 
 if __name__ == '__main__':
+    # Python has no native way to print binary unsigned numbers. Lame!
+    def tobin(data, width=8):
+        data_str = bin(data & (2**width-1))[2:].zfill(width)
+        return data_str
+
     shiftr = CD4021(11, 9, 4)
     try:
         while True:
             # b1 = shiftr.read_one_byte()
             # print(format(b1, '#010b'))
             bytes = shiftr.read_n_bytes(3)
-            print('   '.join([format(b, '#010b') for b in bytes]))
-            print('   '.join(["%10x" % b for b in bytes]))
+            print('   '.join([tobin(b, 8) for b in bytes]))
+            print('   '.join(["%8x" % b for b in bytes]))
             time.sleep(1)
     except KeyboardInterrupt:
         GPIO.cleanup()
