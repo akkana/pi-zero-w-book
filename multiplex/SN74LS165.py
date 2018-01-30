@@ -13,10 +13,10 @@ class SN74LS165:
     pulse_time = .000005     # 5 microseconds
 
     def __init__(self, clock, latch, data, clock_enable, num_chips=1):
-        self.latch = latch                 # AKA pload AKA PL
-        self.clock = clock                 # AKA CP
-        self.data = data                   # AKA Q7
-        self.clock_enable = clock_enable   # AKA CE
+        self.latch = latch                 # AKA pload AKA PL, pin 1
+        self.clock = clock                 # AKA CP, pin 2
+        self.data = data                   # AKA Q7, pin 9
+        self.clock_enable = clock_enable   # AKA CE, pin 15
 
         self.num_chips = num_chips
         self.datawidth = self.num_chips * 8

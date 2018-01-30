@@ -38,14 +38,14 @@ bytes_to_freqs = [
         noteplayer.G * 2     # 0x80
     ],
     [
-        noteplayer.F * 4,    # 0x1
-        noteplayer.E * 4,    # 0x2
-        noteplayer.Eb * 4,   # 0x4
-        noteplayer.D * 4,    # 0x8
-        noteplayer.C * 4,    # 0x10
-        noteplayer.B * 4,    # 0x20
+        noteplayer.D * 4,    # 0x1
+        noteplayer.Db * 4,   # 0x2
+        noteplayer.C * 4,    # 0x4
+        noteplayer.B * 4,    # 0x8
+        noteplayer.F * 4,    # 0x10
+        noteplayer.Eb * 4,   # 0x20
         None,                # 0x40
-        noteplayer.Db * 4    # 0x80
+        noteplayer.E * 4,    # 0x80
     ]
     ]
 
@@ -92,6 +92,9 @@ def play_notes(threebytes):
         noteplayer.play_current_waves()
 
 if __name__ == '__main__':
+    # Use GPIO numbering:
+    GPIO.setmode(GPIO.BCM)
+
     shiftr = CD4021(11, 9, 4)
 
     noteplayer.init()
