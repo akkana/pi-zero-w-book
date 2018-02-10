@@ -6,7 +6,7 @@ import time
 pin_base = 65       # lowest available starting number is 65
 i2c_addr = 0x20     # A0, A1, A2 pins all wired to GND
 
-NUMLEDS = 9
+NUMLEDS = 10
 
 wiringpi.wiringPiSetup()                    # initialise wiringpi
 wiringpi.mcp23017Setup(pin_base, i2c_addr)  # set up the pins and i2c address
@@ -26,7 +26,6 @@ wiringpi.pullUpDnControl(input_pin, 2)   # set internal pull-up
 i = 0
 try:
     while True:
-        print i
         for j in range(0, NUMLEDS):
             if j == i:
                 wiringpi.digitalWrite(pin_base + j, 1)
@@ -34,7 +33,7 @@ try:
                 wiringpi.digitalWrite(pin_base + j, 0)
 
         val = wiringpi.digitalRead(input_pin)
-        print("Read %d" % val)
+        print("%d    Read %d" % (i, val))
 
         if val:
             i -= 1

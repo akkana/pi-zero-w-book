@@ -12,6 +12,7 @@ import time
 
 class CD4021:
     pulse_time = .000025     # gordonDrogon says 25 microseconds, .000025
+    pulse_time = .00001
 
     def __init__(self, clock, latch, data, num_chips=1):
         self.latch = latch   # aka M on the pinout, pin 9
@@ -33,7 +34,7 @@ class CD4021:
         GPIO.output(pin, GPIO.HIGH)
         time.sleep(CD4021.pulse_time)
         GPIO.output(pin, GPIO.LOW)
-        time.sleep(CD4021.pulse_time)
+        # time.sleep(CD4021.pulse_time)
 
     def read_shift_regs(self):
         '''Read the results of the shift registers.
