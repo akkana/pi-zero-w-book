@@ -45,42 +45,6 @@ freqs = [
     noteplayer.F * 4,
 ]
 
-# # Which bytes and bits in the 30CD4021 wiring corresponds to which frequencies:
-# # with three shift registers it's hard to get the notes in order, so allow
-# # for them to be out.
-# bytes_to_freqs = [
-#     [
-#         noteplayer.G,        # 0x1
-#         noteplayer.Ab * 2,   # 0x2
-#         noteplayer.A * 2,    # 0x4
-#         noteplayer.Bb * 2,   # 0x8
-#         noteplayer.C * 2,    # 0x10
-#         noteplayer.Db * 2,   # 0x20
-#         noteplayer.D * 2,    # 0x40
-#         noteplayer.B * 2     # 0x80
-#     ],
-#     [
-#         noteplayer.Gb * 2,   # 0x1
-#         noteplayer.F * 2,    # 0x2
-#         noteplayer.E * 2,    # 0x4
-#         noteplayer.Eb * 2,   # 0x8
-#         noteplayer.Bb * 4,   # 0x10
-#         noteplayer.A * 4,    # 0x20
-#         noteplayer.Ab * 4,   # 0x40
-#         noteplayer.G * 2     # 0x80
-#     ],
-#     [
-#         noteplayer.D * 4,    # 0x1
-#         noteplayer.Db * 4,   # 0x2
-#         noteplayer.C * 4,    # 0x4
-#         noteplayer.B * 4,    # 0x8
-#         noteplayer.F * 4,    # 0x10
-#         noteplayer.Eb * 4,   # 0x20
-#         None,                # 0x40
-#         noteplayer.E * 4,    # 0x80
-#     ]
-# ]
-
 def bits(number):
     '''Given a number, returns a list of the bit positions that are on.
        e.g. bits(5) will yield 0, 2.
