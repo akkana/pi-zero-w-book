@@ -22,6 +22,8 @@ from luma.led_matrix.device import max7219
 from luma.core.interface.serial import spi, noop
 from luma.core.virtual import sevensegment
 
+from neopixel import Adafruit_NeoPixel, Color, ws
+
 # Button class to keep track of things like longpress and debouncing.
 class Button:
     debouncetime = 1
@@ -72,7 +74,8 @@ class Button:
         return 0
 
 class SpeechTimer:
-    def __init__(self, seg, minutes, startstoppin, updownpins, lightpins):
+    def __init__(self, seg, minutes, startstoppin, updownpins,
+                 lightpins=None, lightstring=None):
         '''
         seg: the max7219 8-segment display.
         startstoppin: Pin for the start/stop button (use internal pullup)
@@ -81,6 +84,7 @@ class SpeechTimer:
         '''
         self.seg = seg
         self.lightpins = lightpins
+        self.lightstring = lightstring
 
         self.startbutton = Button(startstoppin)
         self.upbutton = Button(updownpins[0])
@@ -102,8 +106,9 @@ class SpeechTimer:
         self.scheduler = None
 
         # Enable the three LEDs:
-        for pin in self.lightpins:
-            GPIO.setup(pin, GPIO.OUT)
+        if self.lightpins:
+            for pin in self.lightpins:
+                GPIO.setup(pin, GPIO.OUT)
 
         # Finally, start the scheduler.
         self.scheduler = sched.scheduler(time.time, time.sleep)
@@ -180,8 +185,23 @@ class SpeechTimer:
         self.scheduler.enterabs(nexttime, 1, self.tick, ())
 
     def set_lights(self, green, yellow, red):
-        for i, val in enumerate((green, yellow, red)):
-            GPIO.output(self.lightpins[i], GPIO.HIGH if val else GPIO.LOW)
+        if self.lightpins:
+            for i, val in enumerate((green, yellow, red)):
+                GPIO.output(self.lightpins[i], GPIO.HIGH if val else GPIO.LOW)
+
+        if self.lightstring:
+            if red:
+                c = Color(255, 0, 0)
+            elif yellow:
+                c = Color(255, 150, 0)
+            elif green:
+                c = Color(0, 255, 0)
+            else:
+                c = Color(0, 0, 0)
+
+            for i in range(lightstring.numPixels()):
+                self.lightstring.setPixelColor(i, c)
+                self.lightstring.show()
 
     def gyr(self, curtime):
         '''Set the green, yellow, red lights
@@ -201,7 +221,6 @@ class SpeechTimer:
         # by more than half a minute, the red light should flash, so
         # it will be True on odd seconds, False on even seconds.
         if curtime > self.goaltime + 30:
-            print("flashing red")
             return self.set_lights(False, False,
                                    (True if (int(curtime) % 2) else False))
 
@@ -239,10 +258,17 @@ if __name__ == '__main__':
         device = max7219(serial, cascaded=1)
         seg = sevensegment(device)
 
+        lightstring = Adafruit_NeoPixel(7, 18,
+                                        800000, 5, False,
+                                        40, 0, ws.WS2811_STRIP_GRB)
+        lightstring.begin()
+
         GPIO.setmode(GPIO.BCM)
         timer = SpeechTimer(seg, minutes=2,
                             startstoppin=13, updownpins=(5, 6),
-                            lightpins=(17, 27, 22))
+                            lightpins=None,
+                            lightstring=lightstring)
+                            # lightpins=(17, 27, 22))
 
     except KeyboardInterrupt:
         print("Interrupt")
