@@ -3,6 +3,14 @@
 # A Bluetooth server that lets nearby bluetooth-enabled devices
 # discover and communicate with each other.
 
+# Using a serial protocol requires that bluetoothd run in compatibility mode:
+# in /lib/systemd/system/bluetooth.service, change the ExecStart line to
+# ExecStart=/usr/lib/bluetooth/bluetoothd -C
+# Or use --compat instead of -C.
+# https://www.raspberrypi.org/forums/viewtopic.php?t=133263&p=887944
+# has some discussion of this, but nobody seems to have successfully
+# written any Python code that uses bluetooth serial without --compat.
+
 import bluetooth
 import socket     # for gethostname() (eyeroll)
 import sys
@@ -51,17 +59,28 @@ def start_server():
 
     uuid = "5f2f7e70-f863-451a-9619-9fce58e2e87e"
 
-    bluetooth.advertise_service(server_sock,
-                                "SwarmServer",
-                                service_id = uuid,
-                                service_classes = [
-                                    uuid, bluetooth.SERIAL_PORT_CLASS
-                                ],
-                                profiles = [ bluetooth.SERIAL_PORT_PROFILE ],
-                                provider=socket.gethostname(),
-                                description="Find other Swarm devices",
-                                # protocols = [ bluetooth.OBEX_UUID ]
-                               )
+    try:
+        bluetooth.advertise_service(server_sock,
+                                    "SwarmServer",
+                                    service_id = uuid,
+                                    service_classes = [
+                                        uuid, bluetooth.SERIAL_PORT_CLASS
+                                    ],
+                                    profiles = [
+                                        bluetooth.SERIAL_PORT_PROFILE ]
+                                    ,
+                                    provider=socket.gethostname(),
+                                    description="Find other Swarm devices",
+                                    # protocols = [ bluetooth.OBEX_UUID ]
+                                   )
+    except bluetooth.btcommon.BluetoothError as e:
+        print('bluetooth.btcommon.BluetoothError: %s' % e.message)
+        # This prints as "(2, 'No such file or directory')" but there
+        # doesn't seem to be any way to pull out just the NSFOD
+        print('''You may need compatibility mode.
+Perhaps change the ExecStart line in /lib/systemd/system/bluetooth.service to:
+ExecStart=/usr/lib/bluetooth/bluetoothd -C''')
+        sys.exit(1)
 
     print "Waiting for connection on RFCOMM channel %d" % port
 
