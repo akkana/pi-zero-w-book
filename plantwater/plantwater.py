@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+#
+# Monitor soil moisture, and water a plant as it needs it.
+#
+# Copyright 2020 by Akkana Peck: share and enjoy under the GPL v2 or later.
+#
+
 # ADS1115 ADC notes:
 # https://github.com/adafruit/Adafruit_CircuitPython_ADS1x15
 # chan.value goes from 0 - 26512
@@ -50,15 +56,11 @@ adc0 = AnalogIn(ads, ADS.P0)
 
 #
 # Initialize the water pump,
-# asmall  motor used via PWM on a SN754410 quad half-bridge
+# a small  motor used via PWM on a SN754410 H-bridge chip.
 #
-
 GPIO.setmode(GPIO.BCM)
-
 GPIO.setup(23, GPIO.OUT)
-
 pump = GPIO.PWM(PUMP_PIN, 50)
-
 pump.start(0)
 
 #
