@@ -25,6 +25,11 @@
 # switch modes: put it in PWM mode, single blinks).
 # It DOES NOT work with serial versions of the ME007.
 
+# Wiring: Trigger and Echo pins to respective RPi GPIO pins, e.g. 23 and 24;
+# Gnd to RPi Ground. V+ to whatever power source you're using;
+# try the RPi 5v pin, but if it doesn't work, try an external power
+# supply (with ground tied to the RPi's ground).
+
 import RPi.GPIO as GPIO
 import time
 
