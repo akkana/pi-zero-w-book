@@ -5,13 +5,15 @@ from time import sleep
 
 GPIO.setmode(GPIO.BCM)
 
-GPIO.setup(14, GPIO.OUT)
+ledpin = 17
+
+GPIO.setup(ledpin, GPIO.OUT)
 
 try:
     while True:
-        GPIO.output(14, GPIO.HIGH)
+        GPIO.output(ledpin, GPIO.HIGH)
         sleep(.5)
-        GPIO.output(14, GPIO.LOW)
+        GPIO.output(ledpin, GPIO.LOW)
         sleep(.5)
 
 except KeyboardInterrupt:
